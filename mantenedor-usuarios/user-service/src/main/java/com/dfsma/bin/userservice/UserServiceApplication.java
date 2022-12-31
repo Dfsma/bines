@@ -1,4 +1,4 @@
-package com.dfsma.bines.userservice;
+package com.dfsma.bin.userservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

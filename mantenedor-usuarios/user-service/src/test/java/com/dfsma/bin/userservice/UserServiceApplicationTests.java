@@ -1,4 +1,4 @@
-package com.dfsma.bines.userservice;
+package com.dfsma.bin.userservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
