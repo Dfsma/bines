@@ -7,14 +7,9 @@ import com.dfsma.bin.userservice.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service("userService")
@@ -22,11 +17,13 @@ public class UserImpl implements UserService{
 
     private static final Logger logger = LoggerFactory.getLogger(UserImpl.class);
 
-    @Autowired
-    @Qualifier("userRepository")
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     ResponseMessage response = new ResponseMessage();
+
+    public UserImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public ResponseEntity<ResponseMessage> saveUser(UserRequest userRequest) throws Exception {
@@ -35,7 +32,6 @@ public class UserImpl implements UserService{
 
         logger.info("--> Inicio mapeado de request a entidad");
         UserEntity userEntity = new UserEntity(
-                userRequest.getIdUsuario(),
                 userRequest.getCdgUserName(),
                 userRequest.getDscApellido(),
                 userRequest.getDscEmail(),
@@ -60,6 +56,46 @@ public class UserImpl implements UserService{
                 response.ResponseMessage(200,"Usuario creado correctamente");
                 httpResponse = new ResponseEntity<>(response, HttpStatus.OK);
                 logger.info("--> Fin de guardado de usuario");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.ResponseMessage(500, e.getMessage());
+            httpResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return httpResponse;
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> updateUser(UserRequest userRequest) throws Exception {
+        ResponseEntity<ResponseMessage> httpResponse;
+
+
+        try {
+            UserEntity existUser = userRepository.findDscEmail(userRequest.getDscEmail());
+            if (existUser == null) {
+                logger.info("--> El usuario a actualizar no existe");
+                response.ResponseMessage(400, "El usuario a actualizar no existe.");
+                httpResponse = new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            } else {
+                logger.info("--> Inicio de actualización de usuario");
+                logger.info("--> Inicio mapeado de request a entidad");
+                UserEntity userEntity = new UserEntity(
+                        existUser.getFchRegistro(),
+                        userRequest.getCdgUserName(),
+                        userRequest.getDscApellido(),
+                        userRequest.getDscEmail(),
+                        userRequest.getDscImagen(),
+                        userRequest.getDscNombre(),
+                        userRequest.getFlgActivo(),
+                        userRequest.getValPassword(),
+                        userRequest.getIdAplicacion()
+                );
+                logger.info("--> Fin mapeado de request a entidad");
+                userRepository.save(userEntity);
+                logger.info("--> Usuario actualizado correctamente");
+                response.ResponseMessage(200,"Usuario actualizado correctamente");
+                httpResponse = new ResponseEntity<>(response, HttpStatus.OK);
+                logger.info("--> Fin de actualización de usuario");
             }
         }catch (Exception e){
             e.printStackTrace();

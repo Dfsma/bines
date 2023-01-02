@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -45,6 +42,22 @@ public class UserController {
         }
 
         return httpResponse;
+    }
+
+    @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseMessage> updateUser(@RequestBody UserRequest userRequest){
+
+            logger.info("--> Invocando el metodo de actualización de usuario");
+            ResponseEntity<ResponseMessage> httpResponse;
+
+            try{
+                httpResponse = userService.updateUser(userRequest);
+            } catch (Exception e) {
+                response.ResponseMessage(500, e.getLocalizedMessage());
+                httpResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            return httpResponse;
     }
 
 }

@@ -22,8 +22,7 @@ public class UserEntity implements Serializable {
     @Id
     @Column(name = "DSC_EMAIL")
     private String dscEmail;
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ")
-    @SequenceGenerator(name = "SEQ", sequenceName = "USER_SEQ", allocationSize = 1)
+
     @Column(name = "ID_USUARIO")
     private Long idUsuario;
 
@@ -67,8 +66,19 @@ public class UserEntity implements Serializable {
         log.info("--> Seteando fecha de modificacion: {}", LocalDateTime.now());
         fchModificacion = LocalDateTime.now();
     }
-    public UserEntity(Long idUsuario, String cdgUserName, String dscApellido, String dscEmail, String dscImagen, String dscNombre, String flgActivo, String valPassword, Long idAplicacion) {
-        this.idUsuario = idUsuario;
+    public UserEntity(String cdgUserName, String dscApellido, String dscEmail, String dscImagen, String dscNombre, String flgActivo, String valPassword, Long idAplicacion) {
+        this.cdgUserName = cdgUserName;
+        this.dscApellido = dscApellido;
+        this.dscEmail = dscEmail;
+        this.dscImagen = dscImagen;
+        this.dscNombre = dscNombre;
+        this.flgActivo = flgActivo;
+        this.valPassword = valPassword;
+        this.idAplicacion = idAplicacion;
+    }
+
+    public UserEntity(LocalDateTime fchRegistro, String cdgUserName, String dscApellido, String dscEmail, String dscImagen, String dscNombre, String flgActivo, String valPassword, Long idAplicacion) {
+        this.fchRegistro = fchRegistro;
         this.cdgUserName = cdgUserName;
         this.dscApellido = dscApellido;
         this.dscEmail = dscEmail;
