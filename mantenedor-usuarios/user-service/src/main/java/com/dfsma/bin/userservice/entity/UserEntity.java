@@ -2,10 +2,12 @@ package com.dfsma.bin.userservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Slf4j
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -18,6 +20,8 @@ public class UserEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(name = "DSC_EMAIL")
+    private String dscEmail;
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ")
     @SequenceGenerator(name = "SEQ", sequenceName = "USER_SEQ", allocationSize = 1)
     @Column(name = "ID_USUARIO")
@@ -28,9 +32,6 @@ public class UserEntity implements Serializable {
 
     @Column(name = "DSC_APELLIDO")
     private String dscApellido;
-
-    @Column(name = "DSC_EMAIL")
-    private String dscEmail;
 
     @Column(name = "DSC_IMAGEN")
     private String dscImagen;
@@ -57,8 +58,14 @@ public class UserEntity implements Serializable {
     private String dscUrlPass;
 
     @PrePersist
-    public void prePersist() {
+    public void prePersistFechaCreacion() {
+        log.info("--> Seteando fecha de creacion: {}", LocalDateTime.now());
         fchRegistro = LocalDateTime.now();
+    }
+    @PreUpdate
+    public void preUpdateFechaModificacion() {
+        log.info("--> Seteando fecha de modificacion: {}", LocalDateTime.now());
+        fchModificacion = LocalDateTime.now();
     }
     public UserEntity(Long idUsuario, String cdgUserName, String dscApellido, String dscEmail, String dscImagen, String dscNombre, String flgActivo, String valPassword, Long idAplicacion) {
         this.idUsuario = idUsuario;

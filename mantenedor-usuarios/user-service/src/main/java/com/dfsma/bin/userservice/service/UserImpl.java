@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service("userService")
 public class UserImpl implements UserService{
@@ -45,23 +47,25 @@ public class UserImpl implements UserService{
         );
         logger.info("--> Fin mapeado de request a entidad");
 
-        logger.info("--> Inicio de guardado de usuario");
-        //TODO: Validar si el usuario existe, pero agregar un indice unico con el id y el correo.
-        boolean userExists = userRepository.exists(Example.of(userEntity));
-
-        if (userExists) {
-            logger.info("--> El usuario ya existe");
-            response.ResponseMessage(400, "El usuario ya existe.");
-            httpResponse = new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } else {
-            userRepository.save(userEntity);
-            logger.info("--> Usuario creado correctamente");
-            response.ResponseMessage(200,"Usuario creado correctamente");
-            httpResponse = new ResponseEntity<>(response, HttpStatus.OK);
+        try {
+            UserEntity existUser = userRepository.findDscEmail(userEntity.getDscEmail());
+            if (existUser != null) {
+                logger.info("--> El usuario ya existe");
+                response.ResponseMessage(400, "El usuario ya existe.");
+                httpResponse = new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            } else {
+                logger.info("--> Inicio de guardado de usuario");
+                userRepository.save(userEntity);
+                logger.info("--> Usuario creado correctamente");
+                response.ResponseMessage(200,"Usuario creado correctamente");
+                httpResponse = new ResponseEntity<>(response, HttpStatus.OK);
+                logger.info("--> Fin de guardado de usuario");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.ResponseMessage(500, e.getMessage());
+            httpResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        logger.info("--> Fin de guardado de usuario");
-
         return httpResponse;
     }
 }
