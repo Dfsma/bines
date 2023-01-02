@@ -67,8 +67,8 @@ public class UserImpl implements UserService{
 
     @Override
     public ResponseEntity<ResponseMessage> updateUser(UserRequest userRequest) throws Exception {
-        ResponseEntity<ResponseMessage> httpResponse;
 
+        ResponseEntity<ResponseMessage> httpResponse;
 
         try {
             UserEntity existUser = userRepository.findDscEmail(userRequest.getDscEmail());
@@ -96,6 +96,34 @@ public class UserImpl implements UserService{
                 response.ResponseMessage(200,"Usuario actualizado correctamente");
                 httpResponse = new ResponseEntity<>(response, HttpStatus.OK);
                 logger.info("--> Fin de actualización de usuario");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.ResponseMessage(500, e.getMessage());
+            httpResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return httpResponse;
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> deleteUser(String dscEmail) throws Exception {
+        ResponseEntity<ResponseMessage> httpResponse;
+
+
+        try {
+            UserEntity existUser = userRepository.findDscEmail(dscEmail);
+            if (existUser == null) {
+                logger.info("--> El usuario a eliminar no existe");
+                response.ResponseMessage(400, "El usuario a eliminar no existe.");
+                httpResponse = new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            } else {
+                logger.info("--> Inicio de eliminacion de usuario");
+
+                userRepository.deleteByDscEmail(dscEmail);
+                logger.info("--> Usuario eliminado correctamente");
+                response.ResponseMessage(200,"Usuario eliminado correctamente");
+                httpResponse = new ResponseEntity<>(response, HttpStatus.OK);
+                logger.info("--> Fin de eliminacion de usuario");
             }
         }catch (Exception e){
             e.printStackTrace();

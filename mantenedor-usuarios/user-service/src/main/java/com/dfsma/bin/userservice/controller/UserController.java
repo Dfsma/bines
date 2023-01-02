@@ -60,4 +60,20 @@ public class UserController {
             return httpResponse;
     }
 
+    @DeleteMapping(value = "/delete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseMessage> deleteUser(@RequestBody UserRequest userRequest){
+
+            logger.info("--> Invocando el metodo de eliminación de usuario");
+            ResponseEntity<ResponseMessage> httpResponse;
+
+            try{
+                httpResponse = userService.deleteUser(userRequest.getDscEmail());
+            } catch (Exception e) {
+                response.ResponseMessage(500, e.getLocalizedMessage());
+                httpResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            return httpResponse;
+    }
+
 }
