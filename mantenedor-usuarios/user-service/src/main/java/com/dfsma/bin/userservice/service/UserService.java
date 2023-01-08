@@ -8,4 +8,5 @@ public interface UserService {
     ResponseEntity<ResponseMessage> saveUser(UserRequest userRequest) throws Exception;
     ResponseEntity<ResponseMessage> updateUser(UserRequest userRequest) throws Exception;
     ResponseEntity<ResponseMessage> deleteUser(String dscEmail) throws Exception;
+    ResponseEntity<ResponseMessage> getUserRoles(String dscEmail) throws Exception;
 }

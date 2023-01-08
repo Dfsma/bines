@@ -76,4 +76,20 @@ public class UserController {
             return httpResponse;
     }
 
+    @GetMapping(value = "/get", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseMessage> getUserAndRoles(@RequestBody UserRequest userRequest){
+
+            logger.info("--> Invocando el metodo de obtencion de usuario y sus roles");
+            ResponseEntity<ResponseMessage> httpResponse;
+
+            try{
+                httpResponse = userService.getUserRoles(userRequest.getDscEmail());
+            } catch (Exception e) {
+                response.ResponseMessage(500, e.getLocalizedMessage());
+                httpResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            return httpResponse;
+    }
+
 }

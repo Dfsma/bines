@@ -1,8 +1,12 @@
 package com.dfsma.bin.userservice.service;
 
+import com.dfsma.bin.userservice.entity.RoleEntity;
 import com.dfsma.bin.userservice.entity.UserEntity;
 import com.dfsma.bin.userservice.pojo.UserRequest;
 import com.dfsma.bin.userservice.pojo.response.ResponseMessage;
+import com.dfsma.bin.userservice.pojo.response.RolesResponse;
+import com.dfsma.bin.userservice.pojo.response.UserResponse;
+import com.dfsma.bin.userservice.repository.RoleRepository;
 import com.dfsma.bin.userservice.repository.UserRepository;
 import com.dfsma.bin.userservice.util.PasswordEncrypt;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Service("userService")
 public class UserImpl implements UserService{
@@ -19,11 +26,13 @@ public class UserImpl implements UserService{
     private static final Logger logger = LoggerFactory.getLogger(UserImpl.class);
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     PasswordEncrypt passwordEncrypt = new PasswordEncrypt();
     ResponseMessage response = new ResponseMessage();
 
-    public UserImpl(UserRepository userRepository) throws Exception {
+    public UserImpl(UserRepository userRepository, RoleRepository roleRepository) throws Exception {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -132,6 +141,55 @@ public class UserImpl implements UserService{
                 response.ResponseMessage(200,"Usuario eliminado correctamente");
                 httpResponse = new ResponseEntity<>(response, HttpStatus.OK);
                 logger.info("--> Fin de eliminacion de usuario");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.ResponseMessage(500, e.getMessage());
+            httpResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return httpResponse;
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> getUserRoles(String dscEmail) throws Exception {
+        ResponseEntity<ResponseMessage> httpResponse;
+        try {
+            UserEntity getUser = userRepository.findDscEmail(dscEmail);
+            if (getUser == null) {
+                logger.info("--> El usuario a obtener no existe");
+                response.ResponseMessage(400, "El usuario a obtener no existe.");
+                httpResponse = new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            } else {
+                logger.info("--> Inicio de obtencion de usuario");
+                logger.info("--> Usuario obtenido correctamente");
+                logger.info("--> Inicio de obtencion de roles");
+                List<RoleEntity> roles = roleRepository.findRolesByUser(getUser.getDscEmail());
+                logger.info("--> Roles obtenidos correctamente");
+                logger.info("--> Inicio de mapeado de roles a response");
+                List<RolesResponse> roleResponsesList = new ArrayList<>();
+
+                for (RoleEntity role : roles) {
+                    RolesResponse rolesResponse = new RolesResponse();
+                    rolesResponse.setRoleId(role.getRoleId());
+                    rolesResponse.setRoleName(role.getRoleName());
+                    rolesResponse.setRoleDescription(role.getRoleDescription());
+                    roleResponsesList.add(rolesResponse);
+                }
+
+                UserResponse userResponse = new UserResponse(
+                        getUser.getCdgUserName(),
+                        getUser.getDscApellido(),
+                        getUser.getDscEmail(),
+                        getUser.getDscImagen(),
+                        getUser.getDscNombre(),
+                        getUser.getFchModificacion(),
+                        getUser.getFchRegistro(),
+                        getUser.getFlgActivo(),
+                        roleResponsesList
+                );
+                response.ResponseMessage(200,"Usuario y sus roles obtenidos correctamente" ,userResponse);
+                httpResponse = new ResponseEntity<>(response, HttpStatus.OK);
+                logger.info("--> Fin de obtencion de usuario");
             }
         }catch (Exception e){
             e.printStackTrace();
