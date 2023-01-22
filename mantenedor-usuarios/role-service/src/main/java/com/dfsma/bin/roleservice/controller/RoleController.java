@@ -4,16 +4,24 @@ import com.dfsma.bin.roleservice.pojo.RoleRequest;
 import com.dfsma.bin.roleservice.pojo.RoleUserRequest;
 import com.dfsma.bin.roleservice.pojo.response.ResponseMessage;
 import com.dfsma.bin.roleservice.service.RoleService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/role")
@@ -61,4 +69,5 @@ public class RoleController {
 
         return httpResponse;
     }
+
 }

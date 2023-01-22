@@ -13,6 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class RoleUserRequest {
+    private Long idUser;
     private String dscEmail;
     private Set<RoleEntity> roles;
 }

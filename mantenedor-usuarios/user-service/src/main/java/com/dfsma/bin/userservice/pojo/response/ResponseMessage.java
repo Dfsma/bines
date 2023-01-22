@@ -11,7 +11,7 @@ public class ResponseMessage {
     Integer code=0;
     String description="";
 
-    UserResponse userResponse;
+    UserResponse user;
 
     public Integer getCode() {
         return code;
@@ -37,7 +37,7 @@ public class ResponseMessage {
     public void ResponseMessage(int httpStatusCode,String reasonPhrase, UserResponse userResponse) {
         this.code = httpStatusCode;
         this.description = reasonPhrase;
-        this.userResponse = userResponse;
+        this.user = userResponse;
     }
     public ResponseMessage() {}
 

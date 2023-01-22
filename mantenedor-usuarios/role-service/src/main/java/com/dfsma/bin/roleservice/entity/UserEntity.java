@@ -27,14 +27,15 @@ public class UserEntity implements Serializable {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "DSC_EMAIL"),
+            joinColumns = @JoinColumn(name = "ID_USUARIO"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     private Set<RoleEntity> roles = new HashSet<>();
 
-    @Id
     @Column(name = "DSC_EMAIL")
     private String dscEmail;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_USUARIO")
     private Long idUsuario;
 
@@ -79,7 +80,8 @@ public class UserEntity implements Serializable {
         fchModificacion = LocalDateTime.now();
     }
 
-    public UserEntity(LocalDateTime fchRegistro, String cdgUserName, String dscApellido, String dscEmail, String dscImagen, String dscNombre, String flgActivo, String valPassword, Long idAplicacion, Set<RoleEntity> roles) {
+    public UserEntity(Long idUsuario, LocalDateTime fchRegistro, String cdgUserName, String dscApellido, String dscEmail, String dscImagen, String dscNombre, String flgActivo, String valPassword, Long idAplicacion, Set<RoleEntity> roles) {
+        this.idUsuario = idUsuario;
         this.fchRegistro = fchRegistro;
         this.cdgUserName = cdgUserName;
         this.dscApellido = dscApellido;

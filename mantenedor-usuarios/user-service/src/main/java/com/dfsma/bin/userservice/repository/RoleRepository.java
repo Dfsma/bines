@@ -10,7 +10,7 @@ import java.util.List;
 @Repository("roleRepository")
 public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
-    @Query(value = "SELECT R.* FROM ROLE R INNER JOIN USER_ROLES UR ON UR.DSC_EMAIL = ?1 AND UR.ROLE_ID = R.ROLE_ID", nativeQuery = true)
-    List<RoleEntity> findRolesByUser(String dscEmail);
+    @Query(value = "SELECT R.* FROM ROLE R INNER JOIN USER_ROLES UR ON UR.ID_USUARIO = ?1 AND UR.ROLE_ID = R.ROLE_ID", nativeQuery = true)
+    List<RoleEntity> findRolesByUser(Long idUsuario);
 
 }

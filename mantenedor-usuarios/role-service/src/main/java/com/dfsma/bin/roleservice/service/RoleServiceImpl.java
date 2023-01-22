@@ -87,6 +87,7 @@ public class RoleServiceImpl implements RoleService {
 
 
             UserEntity userEntity = new UserEntity(
+                    roleUserRequest.getIdUser(),
                     searchedUser.getFchRegistro(),
                     searchedUser.getCdgUserName(),
                     searchedUser.getDscApellido(),

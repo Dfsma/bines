@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin("*")
 @Slf4j
 public class UserController {
 
@@ -83,13 +84,29 @@ public class UserController {
             ResponseEntity<ResponseMessage> httpResponse;
 
             try{
-                httpResponse = userService.getUserRoles(userRequest.getDscEmail());
+                httpResponse = userService.getUserRoles(userRequest.getIdUsuario());
             } catch (Exception e) {
                 response.ResponseMessage(500, e.getLocalizedMessage());
                 httpResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
             return httpResponse;
+    }
+
+    @GetMapping(value = "/get-users", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUsers(){
+
+        logger.info("--> Invocando el metodo de obtencion de usuarios");
+        ResponseEntity<?> httpResponse;
+
+        try{
+            httpResponse = userService.getUsers();
+        } catch (Exception e) {
+            response.ResponseMessage(500, e.getLocalizedMessage());
+            httpResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return httpResponse;
     }
 
 }

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(value = "SELECT * FROM USUARIO WHERE DSC_EMAIL = ?1", nativeQuery = true)
     UserEntity findDscEmail(String dscEmail);
+
+    @Query(value = "SELECT * FROM USUARIO WHERE ID_USUARIO = ?1", nativeQuery = true)
+    UserEntity findIdUser(Long idUser);
     @Modifying
     @Transactional
     void deleteByDscEmail(String dscEmail);

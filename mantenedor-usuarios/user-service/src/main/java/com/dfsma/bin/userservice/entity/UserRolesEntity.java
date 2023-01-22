@@ -20,8 +20,8 @@ public class UserRolesEntity {
     @Column(name = "ROLE_ID")
     private Long roleId;
 
-    @JoinColumn(name = "DSC_EMAIL")
-    private String dscEmail;
+    @JoinColumn(name = "ID_USUARIO")
+    private String idUsuario;
 
 
 }
